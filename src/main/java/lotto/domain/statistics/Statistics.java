@@ -1,9 +1,11 @@
 package lotto.domain.statistics;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lotto.domain.statistics.dto.ResultDto;
 import lotto.domain.lottorank.LottoRank;
 import lotto.domain.lottorank.LottoRanks;
@@ -20,16 +22,8 @@ public class Statistics {
     }
 
     private Map<LottoRank, Integer> rankStatistics(final List<LottoRank> lottoRanks) {
-        Map<LottoRank, Integer> rankCounts = new LinkedHashMap<>();
-
-        Arrays.stream(LottoRank.values()).forEach(rank ->
-                rankCounts.put(rank, rankCounts.getOrDefault(rank, 0)
-                        + (int) lottoRanks.stream()
-                        .filter(resultRank -> rank == resultRank)
-                        .count())
-        );
-
-        return rankCounts;
+        return Arrays.stream(LottoRank.values()).collect(Collectors.toMap(
+                i1 -> i1,  i1 -> Collections.frequency(lottoRanks, i1), (e1,e2) -> e1 ,LinkedHashMap::new));
     }
 
     private double profitStatistics(final List<Integer> amounts) {
